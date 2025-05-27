@@ -1,18 +1,17 @@
 from graph import workflow
 
-user_input = "Build an AI-based chatbot platform for therapists to manage client communication."
-
-# Run the LangGraph workflow with the user input
+user_input = "Create a platform where users can upload short videos and follow each other."
 result = workflow.invoke({"input": user_input})
+state = result.get_state()
 
-# Convert LangGraph state object to a plain dictionary
-result_dict = dict(result)
+print("\n✅ FINAL AGENT OUTPUTS:\n")
 
-# Print all outputs for debugging
-print("\n🧠 Full Output State:\n")
-for k, v in result_dict.items():
-    print(f"{k}:\n{v}\n")
+def clean(value):
+    # Handle escaped characters cleanly
+    return value.encode("utf-8").decode("unicode_escape") if isinstance(value, str) else value
 
-# Specifically print the frontend response
-print("\n💡 Final Frontend Output:\n")
-print(result_dict.get("frontend_output", "No frontend output found"))
+for key, value in state.items():
+    if key.startswith("__"):  # Skip internal routing keys
+        continue
+    print(f"\n🔹 {key.upper()}:\n")
+    print(clean(value))
